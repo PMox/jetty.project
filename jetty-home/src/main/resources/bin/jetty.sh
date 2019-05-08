@@ -119,9 +119,10 @@ findDirectory()
 
 running()
 {
+  local PID
   if [ -f "$1" ]
   then
-    local PID=$(cat "$1" 2>/dev/null) || return 1
+    PID=$(cat "$1" 2>/dev/null) || return 1
     kill -0 "$PID" 2>/dev/null
     return
   fi
@@ -131,6 +132,7 @@ running()
 
 started()
 {
+  local PID
   # wait for 60s to see "STARTED" in PID file, needs jetty-started.xml as argument
   for ((T = 0; T < $(($3 / 4)); T++))
   do
@@ -138,7 +140,7 @@ started()
     [ -z "$(grep STARTED $1 2>/dev/null)" ] || return 0
     [ -z "$(grep STOPPED $1 2>/dev/null)" ] || return 1
     [ -z "$(grep FAILED $1 2>/dev/null)" ] || return 1
-    local PID=$(cat "$2" 2>/dev/null) || return 1
+    PID=$(cat "$2" 2>/dev/null) || return 1
     kill -0 "$PID" 2>/dev/null || return 1
     echo -n ". "
   done
